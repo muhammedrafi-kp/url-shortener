@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { HTTP_STATUS, HTTP_MESSAGE } from "../constants/http";
-import { JwtPayload } from "jsonwebtoken";
 import { verifyToken } from "../utils/jwt";
 import { JwtUserPayload } from "../types/express";
 

@@ -1,6 +1,8 @@
 import { Schema, Document, model, Types } from 'mongoose';
+import { ObjectId } from "mongodb";
 
 export interface IURL extends Document {
+    _id: ObjectId,
     shortCode: string;
     originalUrl: string;
     userId: Types.ObjectId;

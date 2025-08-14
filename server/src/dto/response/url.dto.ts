@@ -10,7 +10,7 @@ export class ShortURLDto {
     public readonly createdAt: Date;
 
     constructor(url: IURL) {
-        this.id = (url._id as Types.ObjectId).toString();
+        this.id = url._id.toString();
         this.shortCode = url.shortCode;
         this.originalUrl = url.originalUrl;
         this.userId = url.userId.toString();
