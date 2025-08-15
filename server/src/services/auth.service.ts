@@ -9,21 +9,23 @@ import { AuthDTo } from "../dto/response/auth.dto";
 import { clearCookie } from "../utils/cookie";
 
 export class AuthService {
-    async login(email: string, password: string): Promise<{ accessToken: string, refreshToken: string, user: AuthDTo }> {
+    async login(email: string, password: string): Promise<{ accessToken: string, user: AuthDTo }> {
         try {
             const user = await User.findOne({ email });
 
-            if (!user) throw new HttpError(HTTP_MESSAGE.NOT_FOUND, HTTP_STATUS.NOT_FOUND)
+            if (!user) throw new HttpError(HTTP_MESSAGE.USER_NOT_FOUND, HTTP_STATUS.NOT_FOUND);
+
+            if (user.authProvider === "google") throw new HttpError(HTTP_MESSAGE.GOOGLE_SIGNIN_REQUIRED, HTTP_STATUS.CONFLICT);
 
             const isPasswordMatch = await bcrypt.compare(password, user.password!);
 
-            if (!isPasswordMatch) throw new HttpError(HTTP_MESSAGE.INVALID_PASSWORD, HTTP_STATUS.UNAUTHORIZED)
+            if (!isPasswordMatch) throw new HttpError(HTTP_MESSAGE.INCORRECT_PASSWORD, HTTP_STATUS.UNAUTHORIZED);
+
             console.log(process.env.JWT_ACCESS_SECRET)
 
             const accessToken = generateToken({ userId: user._id }, process.env.JWT_ACCESS_SECRET as string, 3600);
-            const refreshToken = generateToken({ userId: user._id }, process.env.JWT_REFRESH_SECRET as string, 25);
 
-            return { accessToken, refreshToken, user: AuthDTo.from(user) };
+            return { accessToken, user: AuthDTo.from(user) };
 
         } catch (error) {
             const message = error instanceof Error ? error.message : String(error);
@@ -34,7 +36,7 @@ export class AuthService {
 
 
 
-    async signup(name: string, email: string, password: string): Promise<{ accessToken: string, refreshToken: string, user: AuthDTo }> {
+    async signup(name: string, email: string, password: string): Promise<{ accessToken: string, user: AuthDTo }> {
         try {
             const existingUser = await User.findOne({ email });
 
@@ -51,10 +53,9 @@ export class AuthService {
             const user = new User(userData);
             await user.save();
 
-            const accessToken = generateToken({ userId: user._id }, process.env.JWT_ACCESS_SECRET as string, 15);
-            const refreshToken = generateToken({ userId: user._id }, process.env.JWT_REFRESH_SECRET as string, 25);
+            const accessToken = generateToken({ userId: user._id }, process.env.JWT_ACCESS_SECRET as string, 3600);
 
-            return { accessToken, refreshToken, user: AuthDTo.from(user) };
+            return { accessToken, user: AuthDTo.from(user) };
 
         } catch (error) {
             const message = error instanceof Error ? error.message : String(error);
@@ -63,7 +64,7 @@ export class AuthService {
         }
     }
 
-    async handleGoogleAuth(credential: string): Promise<{ accessToken: string; refreshToken: string; user: AuthDTo }> {
+    async handleGoogleAuth(credential: string): Promise<{ accessToken: string; user: AuthDTo }> {
         try {
 
             const payload = await verifyGoogleToken(credential);
@@ -85,10 +86,9 @@ export class AuthService {
                 await user.save();
             }
 
-            const accessToken = generateToken({ userId: user._id }, process.env.JWT_ACCESS_SECRET as string, 15);
-            const refreshToken = generateToken({ userId: user._id }, process.env.JWT_REFRESH_SECRET as string, 25);
+            const accessToken = generateToken({ userId: user._id }, process.env.JWT_ACCESS_SECRET as string, 3600);
 
-            return { accessToken, refreshToken, user: AuthDTo.from(user) };
+            return { accessToken, user: AuthDTo.from(user) };
 
         } catch (error) {
             const message = error instanceof Error ? error.message : String(error);
@@ -100,7 +100,6 @@ export class AuthService {
     async logout(res: Response): Promise<void> {
         try {
             clearCookie(res, "accessToken");
-            // clearCookie(res, "refreshToken");
             return;
         } catch (error) {
             const message = error instanceof Error ? error.message : String(error);

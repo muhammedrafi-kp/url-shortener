@@ -11,24 +11,23 @@ export class AuthController {
     async login(req: Request, res: Response) {
         try {
             const { email, password } = req.body;
-            const { accessToken, refreshToken, user } = await this._authService.login(email, password);
+            console.log(email, password)
+            const { accessToken, user } = await this._authService.login(email, password);
 
-            console.log("accessToken :", accessToken)
-            // console.log("refreshToken :", refreshToken)
-            console.log("user :", user)
+            // console.log("accessToken :", accessToken)
+            console.log("user :", user);
 
-            setCookie(res, 'accessToken', accessToken, 10);
-            // setCookie(res, 'refreshToken', refreshToken, 20);
+            setCookie(res, 'accessToken', accessToken, 3600 * 1000);
 
-            res.status(HTTP_STATUS.OK).json({ message: HTTP_MESSAGE.LOGIN_SUCCESS, data: user });
+            res.status(HTTP_STATUS.OK).json({ success: true, message: HTTP_MESSAGE.LOGIN_SUCCESS, data: user });
 
         } catch (error: unknown) {
             if (error instanceof HttpError) {
                 console.info(`HTTP Error: ${error.status} - ${error.message}`);
-                res.status(error.status).json({ message: error.message });
+                res.status(error.status).json({ success: false, message: error.message });
             } else {
                 console.error('Unexpected error:', error);
-                res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: HTTP_MESSAGE.INTERNAL_SERVER_ERROR })
+                res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: HTTP_MESSAGE.INTERNAL_SERVER_ERROR })
             }
         }
     }
@@ -38,24 +37,22 @@ export class AuthController {
             const { name, email, password } = req.body;
             console.log(req.body);
 
-            const { accessToken, refreshToken, user } = await this._authService.signup(name, email, password);
+            const { accessToken, user } = await this._authService.signup(name, email, password);
 
             console.log("accessToken :", accessToken)
-            // console.log("refreshToken :", refreshToken)
             console.log("user :", user)
 
-            setCookie(res, 'accessToken', accessToken, 10);
-            // setCookie(res, 'refreshToken', refreshToken, 20);
+            setCookie(res, 'accessToken', accessToken, 3600 * 1000);
 
-            res.status(HTTP_STATUS.OK).json({ message: HTTP_MESSAGE.CREATED, data: user });
+            res.status(HTTP_STATUS.OK).json({ success: true, message: HTTP_MESSAGE.CREATED, data: user });
 
         } catch (error: unknown) {
             if (error instanceof HttpError) {
                 console.info(`HTTP Error: ${error.status} - ${error.message}`);
-                res.status(error.status).json({ message: error.message });
+                res.status(error.status).json({ success: false, message: error.message });
             } else {
                 console.error('Unexpected error:', error);
-                res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: HTTP_MESSAGE.INTERNAL_SERVER_ERROR })
+                res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: HTTP_MESSAGE.INTERNAL_SERVER_ERROR })
             }
         }
     }
@@ -63,21 +60,21 @@ export class AuthController {
     async googleAuthCallback(req: Request, res: Response): Promise<void> {
         try {
             const { credential } = req.body;
+            console.log("credential : ", typeof credential);
 
-            const { accessToken, refreshToken, user } = await this._authService.handleGoogleAuth(credential);
+            const { accessToken, user } = await this._authService.handleGoogleAuth(credential);
 
-            setCookie(res, "accessToken", accessToken, 15)
-            // setCookie(res, 'refreshToken', refreshToken, 20);
+            setCookie(res, "accessToken", accessToken, 3600 * 1000);
 
-            res.status(HTTP_STATUS.OK).json({ message: HTTP_MESSAGE.CREATED, data: user });
+            res.status(HTTP_STATUS.OK).json({ success: true, message: HTTP_MESSAGE.CREATED, data: user });
 
         } catch (error: any) {
             if (error instanceof HttpError) {
                 console.info(`HTTP Error: ${error.status} - ${error.message}`);
-                res.status(error.status).json({ message: error.message });
+                res.status(error.status).json({ success: false, message: error.message });
             } else {
                 console.error('Unexpected error:', error);
-                res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: HTTP_MESSAGE.INTERNAL_SERVER_ERROR })
+                res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: HTTP_MESSAGE.INTERNAL_SERVER_ERROR })
             }
         }
     }
@@ -86,15 +83,15 @@ export class AuthController {
         try {
             await this._authService.logout(res);
 
-            res.status(HTTP_STATUS.OK).json({ message: HTTP_MESSAGE.OK });
+            res.status(HTTP_STATUS.OK).json({ success: true, message: HTTP_MESSAGE.OK });
 
         } catch (error: unknown) {
             if (error instanceof HttpError) {
                 console.info(`HTTP Error: ${error.status} - ${error.message}`);
-                res.status(error.status).json({ message: error.message });
+                res.status(error.status).json({ success: false, message: error.message });
             } else {
                 console.error('Unexpected error:', error);
-                res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: HTTP_MESSAGE.INTERNAL_SERVER_ERROR })
+                res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: HTTP_MESSAGE.INTERNAL_SERVER_ERROR })
             }
         }
     }

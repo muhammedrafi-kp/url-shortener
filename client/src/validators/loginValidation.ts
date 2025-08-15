@@ -1,30 +1,18 @@
-export interface ValidationErrors {
-  username?: string;
-  email?: string;
-  password?: string;
-  confirmPassword?: string;
-}
-
-export interface FormData {
-  username?: string;
-  email: string;
-  password: string;
-  confirmPassword?: string;
-}
+import type {ValidationErrors,FormData} from "../types/types";
 
 export const validateForm = (data: FormData, isSignup: boolean = false): ValidationErrors => {
   const errors: ValidationErrors = {};
 
   // Username validation (only for signup)
   if (isSignup) {
-    if (!data.username || data.username.trim() === '') {
-      errors.username = 'Username is required';
-    } else if (data.username.length < 3 || data.username.length > 15) {
-      errors.username = 'Username must be between 3 and 15 characters long';
-    } else if (/^[0-9_]/.test(data.username)) {
-      errors.username = 'Username cannot start with a number or underscore';
-    } else if (/^[0-9_]+$/.test(data.username)) {
-      errors.username = 'Username cannot contain only numbers or underscores';
+    if (!data.name || data.name.trim() === '') {
+      errors.name = 'Username is required';
+    } else if (data.name.length < 3 || data.name.length > 15) {
+      errors.name = 'Username must be between 3 and 15 characters long';
+    } else if (/^[0-9_]/.test(data.name)) {
+      errors.name = 'Username cannot start with a number or underscore';
+    } else if (/^[0-9_]+$/.test(data.name)) {
+      errors.name = 'Username cannot contain only numbers or underscores';
     }
   }
 

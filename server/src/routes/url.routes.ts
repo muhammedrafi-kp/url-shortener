@@ -4,7 +4,6 @@ import { UrlService } from "../services/url.service";
 import { validateToken } from "../middlewares/auth.middleware";
 import { validateRequest } from "../middlewares/validate.middleware";
 import { UrlDto } from "../dto/request/create-url.dto";
-import { ShortCodeParamsDto } from "../dto/request/short-code-params.dto"
 
 const urlService = new UrlService()
 const urlController = new UrlController(urlService);

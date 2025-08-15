@@ -2,6 +2,74 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom Google OAuth Button Styling */
+.google-oauth-wrapper {
+  width: 100%;
+}
+
+.google-oauth-wrapper > div {
+  width: 100% !important;
+}
+
+.google-oauth-wrapper iframe {
+  width: 100% !important;
+  height: 48px !important;
+}
+
+/* Override Google's default button styles to match our design */
+.google-oauth-wrapper [role="button"] {
+  width: 100% !important;
+  height: 48px !important;
+  background: white !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  color: #334155 !important;
+  font-family: inherit !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+  position: relative !important;
+}
+
+.google-oauth-wrapper [role="button"]:hover {
+  background: #f8fafc !important;
+  border-color: #94a3b8 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+.google-oauth-wrapper [role="button"]:active {
+  transform: scale(0.98) !important;
+}
+
+/* Ensure Google logo is properly sized and centered */
+.google-oauth-wrapper img {
+  width: 18px !important;
+  height: 18px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Center the button content properly */
+.google-oauth-wrapper [role="button"] > div {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  gap: 8px !important;
+}
+
+/* Override any Google-specific positioning */
+.google-oauth-wrapper [role="button"] span {
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center !important;
+}
+
 
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;

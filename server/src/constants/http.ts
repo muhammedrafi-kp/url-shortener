@@ -28,9 +28,11 @@ export enum HTTP_MESSAGE {
     INTERNAL_SERVER_ERROR = "Internal server error",
     BAD_GATEWAY = "Bad gateway",
     SERVICE_UNAVAILABLE = "Service unavailable",
-    INVALID_PASSWORD = "Invalid password",
+    USER_NOT_FOUND = "User not found",
+    INCORRECT_PASSWORD = "Incorrect password",
     ALREADY_EXISTS = "User already exists",
-    LOGIN_SUCCESS="Login successfully",
-    TOKEN_EXPIRED="Token expired",
-    URL_NOT_FOUND="Short URL not found"
+    LOGIN_SUCCESS = "Login successfully",
+    TOKEN_EXPIRED = "Token expired",
+    URL_NOT_FOUND = "Short URL not found",
+    GOOGLE_SIGNIN_REQUIRED = "Account linked to Google, Sign in with Google."
 }

@@ -2,7 +2,7 @@ import { apiClient } from "./axiosInstance";
 import type { IUrl, ApiResponse } from "../types/types";
 
 export const createShortUrl = async (originalUrl: string): Promise<ApiResponse<string>> => {
-    const res = await apiClient.post("/auth/signup", { originalUrl });
+    const res = await apiClient.post("/url", { originalUrl });
     return res.data;
 }
 

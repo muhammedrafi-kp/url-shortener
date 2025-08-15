@@ -1,6 +1,8 @@
 import express from "express";
 import { configDotenv } from "dotenv";
 import morgan from "morgan";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 import connectDB from "./configs/db";
 import authRoutes from "./routes/auth.routes";
 import urlRoutes from "./routes/url.routes";
@@ -12,7 +14,16 @@ configDotenv();
 const app = express();
 
 connectDB();
+
+app.use(cors({
+    origin: process.env.FRONTEND_URL,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+}))
+
 app.use(express.json());
+app.use(cookieParser());
 app.use(morgan('dev'));
 
 app.use('/api/auth', authRoutes);
@@ -24,8 +35,8 @@ const urlController = new UrlController(urlService);
 app.get('/:shortCode', urlController.redirect.bind(urlController));
 
 
-app.get('/api/test',(req,res)=>{
-    res.status(200).json({message:"ok"});
+app.get('/api/test', (req, res) => {
+    res.status(200).json({ message: "ok" });
 })
 
 app.listen(process.env.PORT, () => {

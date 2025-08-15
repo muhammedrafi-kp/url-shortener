@@ -17,15 +17,15 @@ export class UrlController {
 
             const shortUrl = await this._urlService.createShortURL(userId, originalUrl);
 
-            res.status(HTTP_STATUS.CREATED).json({ message: HTTP_MESSAGE.CREATED, data: shortUrl });
+            res.status(HTTP_STATUS.CREATED).json({ success: true, message: HTTP_MESSAGE.CREATED, data: shortUrl });
 
         } catch (error: unknown) {
             if (error instanceof HttpError) {
                 console.info(`HTTP Error: ${error.status} - ${error.message}`);
-                res.status(error.status).json({ message: error.message });
+                res.status(error.status).json({ success: false, message: error.message });
             } else {
                 console.error('Unexpected error:', error);
-                res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: HTTP_MESSAGE.INTERNAL_SERVER_ERROR })
+                res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: HTTP_MESSAGE.INTERNAL_SERVER_ERROR })
             }
         }
     }
@@ -36,13 +36,13 @@ export class UrlController {
             const { shortCode } = req.params;
 
             if (!shortCode) {
-                return res.status(HTTP_STATUS.NOT_FOUND).json({ message: HTTP_MESSAGE.URL_NOT_FOUND });
+                return res.status(HTTP_STATUS.NOT_FOUND).json({ success: false, message: HTTP_MESSAGE.URL_NOT_FOUND });
             }
 
             const urlDoc = await this._urlService.getOriginalURL(shortCode);
 
             if (!urlDoc) {
-                return res.status(HTTP_STATUS.NOT_FOUND).json({ message: HTTP_MESSAGE.URL_NOT_FOUND });
+                return res.status(HTTP_STATUS.NOT_FOUND).json({ success: false, message: HTTP_MESSAGE.URL_NOT_FOUND });
             }
 
             res.redirect(urlDoc.originalUrl);
@@ -50,10 +50,10 @@ export class UrlController {
         } catch (error: unknown) {
             if (error instanceof HttpError) {
                 console.info(`HTTP Error: ${error.status} - ${error.message}`);
-                res.status(error.status).json({ message: error.message });
+                res.status(error.status).json({ success: false, message: error.message });
             } else {
                 console.error('Unexpected error:', error);
-                res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: HTTP_MESSAGE.INTERNAL_SERVER_ERROR })
+                res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: HTTP_MESSAGE.INTERNAL_SERVER_ERROR })
             }
         }
     }
@@ -65,15 +65,15 @@ export class UrlController {
 
             const urls = await this._urlService.getUserURLs(userId);
 
-            res.status(HTTP_STATUS.OK).json({ data: urls })
+            res.status(HTTP_STATUS.OK).json({ success: true, data: urls })
 
         } catch (error: unknown) {
             if (error instanceof HttpError) {
                 console.info(`HTTP Error: ${error.status} - ${error.message}`);
-                res.status(error.status).json({ message: error.message });
+                res.status(error.status).json({ success: false, message: error.message });
             } else {
                 console.error('Unexpected error:', error);
-                res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: HTTP_MESSAGE.INTERNAL_SERVER_ERROR })
+                res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: HTTP_MESSAGE.INTERNAL_SERVER_ERROR })
             }
         }
     }
