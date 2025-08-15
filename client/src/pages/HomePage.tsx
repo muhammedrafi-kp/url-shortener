@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import type { RootState } from '../redux/store';
 import Header from '../components/Header';
 import { useNavigate } from 'react-router-dom';
-import { createShortUrl, getSavedUrls } from "../api/urlApi";
+import { createShortUrl } from "../api/urlApi";
 import { AxiosError } from "axios";
 import toast from 'react-hot-toast';
 
@@ -12,7 +12,7 @@ import toast from 'react-hot-toast';
 const HomePage: React.FC = () => {
     const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
     const [url, setUrl] = useState('');
-    const [shortenedUrls, setShortenedUrls] = useState([]);
+    const [shortenedUrls] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [newShortUrl, setNewShortUrl] = useState('');
     const [originalUrl, setOriginalUrl] = useState('');
