@@ -9,19 +9,25 @@ const SavedUrlsPage: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [totalPages, setTotalPages] = useState<number>(1);
+    const [totalCount, setTotalCount] = useState<number>(0);
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchSavedUrls();
-    }, []);
+        fetchSavedUrls(currentPage);
+    }, [currentPage]);
 
-    const fetchSavedUrls = async () => {
+    const fetchSavedUrls = async (page: number) => {
         try {
             setLoading(true);
-            const response = await getSavedUrls();
+            const response = await getSavedUrls(page, 5);
             console.log("response :", response);
             if (response.success) {
-                setSavedUrls(response.data);
+                const { items, total, totalPages } = response.data;
+                setSavedUrls(items);
+                setTotalPages(totalPages);
+                setTotalCount(total);
             } else {
                 setError(response.message || 'Failed to fetch saved URLs');
             }
@@ -30,6 +36,14 @@ const SavedUrlsPage: React.FC = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const goToPrevPage = () => {
+        if (currentPage > 1) setCurrentPage(currentPage - 1);
+    };
+
+    const goToNextPage = () => {
+        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
     };
 
     const copyToClipboard = async (shortUrl: string) => {
@@ -125,7 +139,7 @@ const SavedUrlsPage: React.FC = () => {
                                 <div className="bg-white rounded-xl shadow-lg overflow-hidden">
                                     <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
                                         <h3 className="text-lg font-medium text-gray-900">
-                                            Total URLs: {savedUrls.length}
+                                            Total URLs: {totalCount}
                                         </h3>
 
                                         <div>
@@ -230,6 +244,25 @@ const SavedUrlsPage: React.FC = () => {
                                                 </div>
                                             );
                                         })}
+                                    </div>
+                                    <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                                        <button
+                                            onClick={goToPrevPage}
+                                            disabled={currentPage === 1 || loading}
+                                            className={`px-4 py-2 rounded-md border text-sm font-medium ${currentPage === 1 || loading ? 'text-gray-400 border-gray-200 cursor-not-allowed' : 'text-gray-700 border-gray-300 hover:bg-gray-50'}`}
+                                        >
+                                            Previous
+                                        </button>
+                                        <span className="text-sm text-gray-600">
+                                            Page {currentPage} of {totalPages}
+                                        </span>
+                                        <button
+                                            onClick={goToNextPage}
+                                            disabled={currentPage === totalPages || loading}
+                                            className={`px-4 py-2 rounded-md border text-sm font-medium ${currentPage === totalPages || loading ? 'text-gray-400 border-gray-200 cursor-not-allowed' : 'text-gray-700 border-gray-300 hover:bg-gray-50'}`}
+                                        >
+                                            Next
+                                        </button>
                                     </div>
                                 </div>
                             )}

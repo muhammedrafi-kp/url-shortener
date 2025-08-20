@@ -63,9 +63,14 @@ export class UrlController {
 
             const userId = new Types.ObjectId(req.user?.userId);
 
-            const urls = await this._urlService.getUserURLs(userId);
+            const pageParam = Array.isArray(req.query.page) ? req.query.page[0] : req.query.page;
+            const limitParam = Array.isArray(req.query.limit) ? req.query.limit[0] : req.query.limit;
+            const page = pageParam ? parseInt(String(pageParam), 10) : 1;
+            const limit = limitParam ? parseInt(String(limitParam), 10) : 5;
 
-            res.status(HTTP_STATUS.OK).json({ success: true, data: urls })
+            const result = await this._urlService.getUserURLs(userId, page, limit);
+
+            res.status(HTTP_STATUS.OK).json({ success: true, data: result })
 
         } catch (error: unknown) {
             if (error instanceof HttpError) {

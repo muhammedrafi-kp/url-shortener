@@ -49,12 +49,22 @@ export class UrlService {
         }
     }
 
-    async getUserURLs(userId: Types.ObjectId): Promise<ShortURLDto[]> {
+    async getUserURLs(userId: Types.ObjectId, page: number, limit: number): Promise<{ items: ShortURLDto[]; total: number; page: number; limit: number; totalPages: number }> {
         try {
+            const safePage = Math.max(1, Math.floor(page) || 1);
+            const safeLimit = Math.max(1, Math.floor(limit) || 5);
 
-            const urls = await URL.find({ userId }).sort({ createdAt: -1 });
+            const total = await URL.countDocuments({ userId });
 
-            return ShortURLDto.fromArray(urls);
+            const urls = await URL.find({ userId })
+                .sort({ createdAt: -1 })
+                .skip((safePage - 1) * safeLimit)
+                .limit(safeLimit);
+
+            const items = ShortURLDto.fromArray(urls);
+            const totalPages = Math.max(1, Math.ceil(total / safeLimit));
+
+            return { items, total, page: safePage, limit: safeLimit, totalPages };
 
         } catch (error) {
             const message = error instanceof Error ? error.message : String(error);

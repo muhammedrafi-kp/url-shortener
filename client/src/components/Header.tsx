@@ -1,19 +1,43 @@
-import React from 'react'
+import React from 'react';
+import { useDispatch } from "react-redux";
 import { Link2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../redux/store';
+import { logoutUser } from "../api/authApi";
+import { logout } from "../redux/authSlice";
+import { AxiosError } from 'axios';
 
-const Header:React.FC = () => {
+const Header: React.FC = () => {
     const navigate = useNavigate();
     const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+    const dispatch = useDispatch();
+
+    const handleLogout = async () => {
+        try {
+            const response = await logoutUser();
+            if (response.success) {
+                dispatch(logout());
+                localStorage.setItem("isAuthenticated", "false");
+                window.location.reload();
+            }
+        } catch (error: unknown) {
+            if (error instanceof AxiosError) {
+                console.error("Logout failed:", error.response?.data.message);
+            } else {
+                console.error("Logout failed:", error);
+            }
+            localStorage.setItem("isAuthenticated", "false");
+            window.location.reload();
+        }
+    }
 
     return (
         <>
             <header className="bg-white shadow-sm border-b border-slate-200">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
                     <div className="flex items-center space-x-2">
-                        <button 
+                        <button
                             onClick={() => navigate("/")}
                             className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
                         >
@@ -21,7 +45,7 @@ const Header:React.FC = () => {
                             <span className="text-2xl font-bold text-indigo-900">ShortLink</span>
                         </button>
                     </div>
-                    
+
                     <div className="flex items-center space-x-4">
                         {isAuthenticated ? (
                             <>
@@ -38,11 +62,7 @@ const Header:React.FC = () => {
                                     Create URL
                                 </button> */}
                                 <button
-                                    onClick={() => {
-                                        // Handle logout logic here
-                                        localStorage.setItem("isAuthenticated", "false");
-                                        window.location.reload();
-                                    }}
+                                    onClick={handleLogout}
                                     className="px-6 py-2 bg-red-600 font-medium text-white rounded-lg hover:bg-red-700 transition-colors"
                                 >
                                     Logout

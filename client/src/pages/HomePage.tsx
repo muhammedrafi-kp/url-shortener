@@ -16,19 +16,40 @@ const HomePage: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [newShortUrl, setNewShortUrl] = useState('');
     const [originalUrl, setOriginalUrl] = useState('');
+    const [urlError, setUrlError] = useState<string | null>(null);
 
     const navigate = useNavigate();
 
+    const isValidUrl = (value: string) => {
+        try {
+            const parsed = new URL(value);
+            return ['http:', 'https:'].includes(parsed.protocol);
+        } catch {
+            return false;
+        }
+    };
+
     const shortenUrl = async () => {
-        if (!url.trim()) return;
-        console.log("url:", url);
+        const trimmed = url.trim();
+        if (!trimmed) {
+            setUrlError('Please enter a URL');
+            return;
+        }
+
+        if (!isValidUrl(trimmed)) {
+            setUrlError('Please enter a valid URL');
+            // setUrlError('Please enter a valid URL (including http:// or https://)');
+            return;
+        }
+        setUrlError(null);
+        console.log("url:", trimmed);
 
         setIsLoading(true);
         setNewShortUrl('');
-        setOriginalUrl(url);
+        setOriginalUrl(trimmed);
 
         try {
-            const res = await createShortUrl(url);
+            const res = await createShortUrl(trimmed);
             if(res.success){
                 setNewShortUrl(res.data);
                 toast.success('URL shortened successfully!');
@@ -93,13 +114,20 @@ const HomePage: React.FC = () => {
                     {/* URL Shortening Form */}
                     <div className="bg-white rounded-xl shadow-lg overflow-hidden p-4 sm:p-8 transition-all duration-300 hover:shadow-xl mb-8">
                         <div className="flex flex-col sm:flex-row gap-4 mb-6">
-                            <input
-                                type="url"
-                                value={url}
-                                onChange={(e) => setUrl(e.target.value)}
-                                placeholder="Enter your long URL here..."
-                                className="flex-1 px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                            />
+                            <div className="flex-1">
+                                <input
+                                    type="url"
+                                    value={url}
+                                    onChange={(e) => { setUrl(e.target.value); if (urlError) setUrlError(null); }}
+                                    placeholder="Enter your long URL here..."
+                                    aria-invalid={urlError ? true : false}
+                                    aria-describedby={urlError ? 'url-error' : undefined}
+                                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${urlError ? 'border-red-500 focus:ring-red-500' : 'border-slate-300 focus:ring-indigo-500 focus:border-transparent'}`}
+                                />
+                                {urlError && (
+                                    <p id="url-error" className="mt-1 text-sm text-red-600">{urlError}</p>
+                                )}
+                            </div>
                             <button
                                 onClick={shortenUrl}
                                 disabled={isLoading}
