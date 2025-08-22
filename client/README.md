@@ -1,69 +1,51 @@
-# React + TypeScript + Vite
+# 🔗 URL Shortener App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack application to convert long URLs into concise, shareable links — built with a modern **TypeScript** stack.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Overview
 
-## Expanding the ESLint configuration
+Users can:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+* Paste any long URL and instantly get a shortened link
+* Reuse shortened links later (persistent history)
+* Sign up / log in using email & password **or** **Continue with Google**
+* View and manage a list of their saved URLs
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## 🛠️ Tech Stack
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+| Layer        | Technology                                    |
+| ------------ | --------------------------------------------- |
+| 🔧 Frontend  | **React** + **TypeScript**                    |
+| 🔧 Backend   | **Node.js** + **Express** + **TypeScript**    |
+| 🗄️ Database | **MongoDB**                                   |
+| 📦 Tools     | Vite, Axios, Tailwind CSS, JWT, Redux Toolkit |
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 📸 Features
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+* 🔐 **Secured Authentication & Authorization**:
+
+  * Email/password login with encrypted passwords
+  * Google OAuth (Continue with Google)
+  * JWT-based session handling
+  * Role-based access control for users
+* ✂️ **URL Shortening**: Generate a unique, minimal short code for any valid URL
+* 📋 **Copy & Reuse**: One-click copy to clipboard and reuse later
+* 🗃️ **Saved URLs**: View a personal list of all your shortened links
+* ⚠️ **Validation & Safety**: Basic URL validation and sanitation
+
+---
+
+## 🌟 Support This Project
+
+If you found this project helpful or interesting, please consider giving it a ⭐ on GitHub 😊
+
+[![GitHub Stars](https://img.shields.io/github/stars/muhammedrafi-kp/url-shortener?style=social)](https://github.com/muhammedrafi-kp/url-shortener/stargazers)
+
+---
+

@@ -27,7 +27,7 @@ app.use(cookieParser());
 app.use(morgan('dev'));
 
 app.use('/api/auth', authRoutes);
-app.use('/api/url', urlRoutes);
+app.use('/api/urls', urlRoutes);
 
 const urlService = new UrlService();
 const urlController = new UrlController(urlService);

@@ -11,6 +11,6 @@ const urlController = new UrlController(urlService);
 const router = Router();
 
 router.post('/', validateToken, validateRequest(UrlDto), urlController.createShortURL.bind(urlController));
-router.get('/user/list',validateToken, urlController.listUserURLs.bind(urlController));
+router.get('/',validateToken, urlController.listUserURLs.bind(urlController));
 
 export default router;
