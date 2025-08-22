@@ -7,6 +7,6 @@ export const createShortUrl = async (originalUrl: string): Promise<ApiResponse<s
 }
 
 export const getSavedUrls = async (page: number = 1, limit: number = 5): Promise<ApiResponse<PaginatedResult<IUrl>>> => {
-    const res = await apiClient.get(`/urls`, { params: { page, limit } });
+    const res = await apiClient.get("/urls", { params: { page, limit } });
     return res.data;
 }
